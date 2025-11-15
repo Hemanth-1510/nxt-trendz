@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom'
 import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
 import {BsPlusSquare, BsDashSquare} from 'react-icons/bs'
+import {API_ENDPOINTS} from '../../config/api'
 
 import CartContext from '../../context/CartContext'
 
@@ -51,10 +52,11 @@ class ProductItemDetails extends Component {
       apiStatus: apiStatusConstants.inProgress,
     })
     const jwtToken = Cookies.get('jwt_token')
-    const apiUrl = `https://apis.ccbp.in/products/${id}`
+    const apiUrl = API_ENDPOINTS.PRODUCT_DETAILS(id)
     const options = {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
+        'Content-Type': 'application/json',
       },
       method: 'GET',
     }

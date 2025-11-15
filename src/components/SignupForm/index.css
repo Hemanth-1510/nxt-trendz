@@ -110,6 +110,11 @@
   outline: none;
 }
 
+.password-input-field.error-field {
+  border: 1px solid #ff0b37;
+  background-color: #ffeef0;
+}
+
 .login-button {
   font-family: 'Roboto';
   font-weight: bold;
@@ -126,6 +131,10 @@
   outline: none;
 }
 
+.login-button:hover {
+  background-color: #0a5ae0;
+}
+
 .error-message {
   align-self: start;
   font-size: 12px;
@@ -135,6 +144,15 @@
   font-size: 12px;
   line-height: 16px;
   color: #ff0b37;
+}
+
+.signup-heading {
+  font-family: 'Roboto';
+  font-size: 28px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 20px;
+  align-self: flex-start;
 }
 
 .signup-text {
@@ -154,3 +172,4 @@
 .signup-link:hover {
   text-decoration: underline;
 }
+

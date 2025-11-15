@@ -1,6 +1,7 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
-import {Redirect} from 'react-router-dom'
+import {Redirect, Link} from 'react-router-dom'
+import {API_ENDPOINTS} from '../../config/api'
 
 import './index.css'
 
@@ -37,17 +38,24 @@ class LoginForm extends Component {
     event.preventDefault()
     const {username, password} = this.state
     const userDetails = {username, password}
-    const url = 'https://apis.ccbp.in/login'
-    const options = {
-      method: 'POST',
-      body: JSON.stringify(userDetails),
-    }
-    const response = await fetch(url, options)
-    const data = await response.json()
-    if (response.ok === true) {
-      this.onSubmitSuccess(data.jwt_token)
-    } else {
-      this.onSubmitFailure(data.error_msg)
+
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userDetails),
+      }
+      const response = await fetch(API_ENDPOINTS.LOGIN, options)
+      const data = await response.json()
+      if (response.ok === true) {
+        this.onSubmitSuccess(data.jwt_token)
+      } else {
+        this.onSubmitFailure(data.error_msg || 'Invalid credentials')
+      }
+    } catch (error) {
+      this.onSubmitFailure('Network error. Please check your connection.')
     }
   }
 
@@ -123,6 +131,12 @@ class LoginForm extends Component {
             Login
           </button>
           {showSubmitError && <p className="error-message">*{errorMsg}</p>}
+          <p className="signup-text">
+            Don&apos;t have an account?{' '}
+            <Link to="/signup" className="signup-link">
+              Sign Up
+            </Link>
+          </p>
         </form>
       </div>
     )

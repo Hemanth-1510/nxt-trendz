@@ -1,6 +1,7 @@
 import {Component} from 'react'
 import Loader from 'react-loader-spinner'
 import Cookies from 'js-cookie'
+import {API_ENDPOINTS} from '../../config/api'
 
 import FiltersGroup from '../FiltersGroup'
 import ProductCard from '../ProductCard'
@@ -97,29 +98,44 @@ class AllProductsSection extends Component {
       searchInput,
       activeRatingId,
     } = this.state
-    const apiUrl = `https://apis.ccbp.in/products?sort_by=${activeOptionId}&category=${activeCategoryId}&title_search=${searchInput}&rating=${activeRatingId}`
-    const options = {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      method: 'GET',
-    }
-    const response = await fetch(apiUrl, options)
-    if (response.ok) {
-      const fetchedData = await response.json()
-      const updatedData = fetchedData.products.map(product => ({
-        title: product.title,
-        brand: product.brand,
-        price: product.price,
-        id: product.id,
-        imageUrl: product.image_url,
-        rating: product.rating,
-      }))
-      this.setState({
-        productsList: updatedData,
-        apiStatus: apiStatusConstants.success,
+
+    try {
+      const queryParams = new URLSearchParams({
+        sort_by: activeOptionId,
+        category: activeCategoryId || '',
+        title_search: searchInput || '',
+        rating: activeRatingId || '',
       })
-    } else {
+
+      const apiUrl = `${API_ENDPOINTS.PRODUCTS}?${queryParams.toString()}`
+      const options = {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
+        },
+        method: 'GET',
+      }
+      const response = await fetch(apiUrl, options)
+      if (response.ok) {
+        const fetchedData = await response.json()
+        const updatedData = fetchedData.products.map(product => ({
+          title: product.title,
+          brand: product.brand,
+          price: product.price,
+          id: product.id,
+          imageUrl: product.image_url,
+          rating: product.rating,
+        }))
+        this.setState({
+          productsList: updatedData,
+          apiStatus: apiStatusConstants.success,
+        })
+      } else {
+        this.setState({
+          apiStatus: apiStatusConstants.failure,
+        })
+      }
+    } catch (error) {
       this.setState({
         apiStatus: apiStatusConstants.failure,
       })
